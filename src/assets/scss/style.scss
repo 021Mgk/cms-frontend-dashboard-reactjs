@@ -1,0 +1,153 @@
+.modal {
+    display: block;
+    position: fixed;
+    z-index: 1;
+    padding-top: 20px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  
+  .modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+  }
+  
+  @-webkit-keyframes animatetop {
+    from {
+      top: -100px;
+      opacity: 0;
+    }
+    to {
+      top: 0;
+      opacity: 1;
+    }
+  }
+  
+  @keyframes animatetop {
+    from {
+      top: -100px;
+      opacity: 0;
+    }
+    to {
+      top: 0;
+      opacity: 1;
+    }
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .modal-header {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+  }
+  
+  .modal-body {
+    padding: 2px 16px;
+  }
+  
+  //table styles
+table * {
+    position: relative;
+  }
+  table {
+    border-spacing: 1;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+  }
+  table thead tr {
+    height: 60px;
+    background: #36304a;
+  }
+  .table-head th {
+    font-size: 18px;
+    color: #fff;
+    line-height: 1.2;
+    font-weight: unset;
+  }
+  table tbody tr {
+    height: 50px;
+  }
+  tbody tr {
+    font-size: 15px;
+    color: #808080;
+    line-height: 1.2;
+    font-weight: unset;
+  }
+  table td,
+  table th {
+    text-align: right;
+    padding: 0.5rem;
+  }
+  tbody tr:nth-child(even) {
+    background-color: #f5f5f5;
+  }
+  tbody tr:hover {
+    color: #555555;
+    background-color: #f5f5f5;
+    cursor: pointer;
+  }
+  //table styles
+  
+  .article__list {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+  
+    .article {
+      width: 30%;
+      margin: 1.5rem 0.5rem;
+  
+      .article__image {
+        width: 100%;
+        height: 250px;
+        overflow: hidden;
+        border-top-right-radius: 4rem;
+  
+        > img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+  
+      .article__titir {
+        background: red;
+        padding: 0.5rem 1rem;
+        min-height: 70px;
+        border-bottom-left-radius: 4rem;
+  
+        > h2 {
+          text-align: right;
+          font-weight: normal;
+          font-size: 20px;
+        }
+      }
+    }
+  }
+  

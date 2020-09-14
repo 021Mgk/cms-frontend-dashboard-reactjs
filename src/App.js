@@ -1,12 +1,16 @@
 import React from 'react';
-import './App.css';
+import Article from './components/pages/Article';
+import Home from './components/pages/Home';
+import { useLocation, Switch } from 'react-router-dom';
+import AppRoute from './utils/AppRoute';
+import LayoutDefault from './layouts/LayoutDefault';
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      hello world!!
-    </div>
+       <Switch>
+          <AppRoute exact path="/" component={Home} layout={LayoutDefault} />
+          <AppRoute exact path="/article" component={Article} layout={LayoutDefault} />
+        </Switch>
+    // <Article />
   );
 }
-
-export default App;
