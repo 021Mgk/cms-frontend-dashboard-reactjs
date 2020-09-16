@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Formik, ErrorMessage } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { Formik } from 'formik';
 import * as yup from 'yup';
 import DatePicker from 'react-datepicker2';
 import momentJalaali from 'moment-jalaali';
@@ -22,19 +22,18 @@ const INITIALVALUE = {
     type: '',
 };
 
-export const ArticleForm = ({ article, actionType, setActionType , getData }) => {
+export const ArticleForm = ({ editData, actionType, setActionType, getData }) => {
+
+    const [formValues , setFormValues] = useState(editData || INITIALVALUE)
+
+    const [todayJalali, setTodayJalali] = useState(momentJalaali());
+    const [todayMilady, setTodayMilady] = useState();
 
 
-
-    const [onChangeValue, setOnChangeValue] = useState(
-        momentJalaali('1399/6/20', 'jYYYY/jM/jD')
-    );
-
-    const persionToEnglish = () => {
-        const formated = onChangeValue.format('YYYY/M/D');
-        console.log(formated, ' formated');
-        const mom = momentJalaali('1360/5/26', 'jYYYY/jM/jD');
-        console.log('mom', mom);
+    const persionToEnglish = (date) => {
+        const formated = date.format('YYYY-M-D');
+        setTodayMilady(formated);
+        setFormValues({...formValues , register_date : todayMilady})
     };
 
     const ArticleFormValidation = yup.object().shape({
@@ -43,11 +42,12 @@ export const ArticleForm = ({ article, actionType, setActionType , getData }) =>
     });
     return (
         <Formik
-            initialValues={article || INITIALVALUE}
+            //initialValues={editData || INITIALVALUE}
+            initialValues={formValues}
             validationSchema={ArticleFormValidation}
             onSubmit={async (values, { setSubmitting }) => {
                 if (actionType === "POST") {
-                    console.log( "avale post " ,  JSON.stringify(values, null, 2));
+                    console.log("avale post ", JSON.stringify(values, null, 2));
                     await fetch('http://localhost:8080/api/v1/articles', {
                         method: 'POST',
                         headers: {
@@ -56,19 +56,12 @@ export const ArticleForm = ({ article, actionType, setActionType , getData }) =>
                         },
                         body: JSON.stringify(values)
                     });
-                    console.log( "asdasdasdasdasdasdasd");
-                    // const article = await res.json();
-                    // console.log(article);
-                    console.log(actionType ,  "before set PUT");
                     setActionType("PUT");
-                    console.log(actionType ,  "after set PUT");
-                    console.log(actionType ,  "before  getDate in articelform");
                     getData();
-                    console.log(actionType ,  "after  getDate in articelform");
                 }
                 if (actionType === "PUT") {
                     console.log(JSON.stringify(values, null, 2));
-                     await fetch(`http://localhost:8080/api/v1/articles/${article?.id}`, {
+                    await fetch(`http://localhost:8080/api/v1/articles/${editData?.id}`, {
                         method: 'PUT',
                         headers: {
                             'Accept': 'application/json',
@@ -78,7 +71,6 @@ export const ArticleForm = ({ article, actionType, setActionType , getData }) =>
                     });
                     getData();
                 }
-
                 setSubmitting(false);
             }}
         >
@@ -91,134 +83,161 @@ export const ArticleForm = ({ article, actionType, setActionType , getData }) =>
                 handleSubmit,
                 isSubmitting
             }) => (
-                    <form className='form' onSubmit={handleSubmit} autoComplete='off'>
-                        {/* // <input
-                                  type="date"
-                                  placeholder="dd-mm-yyyy"
-                                  min="1997-01-01"
-                                  name="register_date"
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  value={values.register_date}
-                              /> //
-               //
-                              <DatePicker
-                                  timePicker={false}
-                                  value={date}
-                                  onChange={() => setDate(date)}                               
-                              /> // */}
+                    <form className='form__style' onSubmit={handleSubmit} autoComplete='off'>
 
-                        <DatePicker
-                            value={onChangeValue}
-                            persianDigits={true}
-                            isGregorian={false}
-                            timePicker={false}
-                            onChange={(onChangeValue) => {
-                                setOnChangeValue(onChangeValue);
-                                persionToEnglish();
-                            }}
-                        />
+                        <pre>
+                            {JSON.stringify(values, null, 4)}
+                        </pre>
 
-                        <input
-                            type='text'
-                            placeholder='dd-mm-yyyy'
-                            name='register_date'
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.register_date || ''}
-                        />
+                        <div className="field__holder">
+                            <label htmlFor="title">   تاریخ ثبت </label>
+                            <DatePicker
+                                value={todayJalali}
+                                persianDigits={true}
+                                isGregorian={false}
+                                timePicker={false}
+                                onChange={(value) => {
+                                    persionToEnglish(value);
+                                  //  values.register_date = todayMilady
+                                }}
+                            />
+                            <input
+                                type='text'
+                                placeholder='dd-mm-yyyy'
+                                name='register_date'
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={actionType == "PUT" ? (values.register_date ? values.register_date : null) : todayMilady}
+                            // style={{display:none}}
+                            />
+                            <span> .... </span>
+                        </div>
 
-                        <br />
+                        <div className="field__holder">
+                            <label htmlFor="title">   عنوان </label>
+                            <input
+                                type='text'
+                                name='title'
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.title}
+                            />
+                            <span>   {errors.title && touched.title && errors.title} </span>
+                        </div>
 
-                        {/* <input
-                            type='text'
-                            name='id'
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.id}
-                        /> */}
 
-                        <input
-                            type='text'
-                            name='title'
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.title}
-                        />
 
-                        {errors.title && touched.title && errors.title}
-                        <ErrorMessage name='title' component='div' />
-                        <br />
-                        <input
-                            type='text'
-                            name='summary'
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.summary}
-                        />
-                        <br />
-                        <input
-                            type='text'
-                            name='text'
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.text}
-                        />
-                        <br />
 
-                        <input
-                            type='file'
-                            name='thumbnail'
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.thumbnail || ''}
-                        />
-                        <br />
-                        <input
-                            type='file'
-                            name='cover'
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.cover || ''}
-                        />
-                        <br />
-                        <input
-                            type='file'
-                            name='attachment'
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.attachment || ''}
-                        />
 
-                        <br />
-                        <input
-                            type='number'
-                            name='status'
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.status}
-                        />
+                        <div className="field__holder">
+                            <label htmlFor="summary">   خلاصه </label>
+                            <input
+                                type='text'
+                                name='summary'
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.summary}
+                            />
+                            <span>   ... </span>
+                        </div>
 
-                        <br />
+                        <div className="field__holder">
+                            <label htmlFor="text">   متن </label>
+                            <input
+                                type='text'
+                                name='text'
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.text}
+                            />
+                            <span>   ... </span>
+                        </div>
 
-                        <input
-                            type='number'
-                            name='type'
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.type}
-                        />
+                        <div className="field__holder">
+                            <label htmlFor="thumbnail">  تصویر کوچک </label>
+                            <input
+                                type='file'
+                                name='thumbnail'
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.thumbnail || ''}
+                            />
+                            <span>   ... </span>
+                        </div>
 
-                        {errors.type && touched.type && errors.type}
-                        <ErrorMessage name='type' component='div' />
-                        <br />
-                        <input
-                            type='number'
-                            name='views'
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.views}
-                        />
+                        <div className="field__holder">
+                            <label htmlFor="cover">  تصویر بزرگ </label>
+                            <input
+                                type='file'
+                                name='cover'
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.cover || ''}
+                            />
+                            <span>   ... </span>
+                        </div>
+
+
+                        <div className="field__holder">
+                            <label htmlFor="attachment">  پیوست </label>
+                            <input
+                                type='file'
+                                name='attachment'
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.attachment || ''}
+                            />
+                            <span>   ... </span>
+                        </div>
+
+
+
+                        <div className="field__holder">
+                            <label htmlFor="status">  وضعیت </label>
+                            <select
+                                name='status'
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.status}>
+                                <option value="0"> انتخاب کنید </option>
+                                <option value="1"> ثبت اولیه  </option>
+                                <option value="2">  انتشار </option>
+                                <option value="3">  حذف </option>
+                            </select>
+                            <span>   ... </span>
+                        </div>
+
+                        <div className="field__holder">
+                            <label htmlFor="type">  نوع </label>
+                            <select
+                                name='type'
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.type}>
+                                <option value="0"> انتخاب کنید </option>
+                                <option value="1">  مقاله  </option>
+                                <option value="2"> خدمات  </option>
+                            </select>
+                            <span>    {errors.type && touched.type && errors.type} </span>
+                        </div>
+
+
+
+
+
+
+                        <div className="field__holder">
+                            <label htmlFor="views"> تعداد نمایش </label>
+                            <input
+                                type='number'
+                                name='views'
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.views}
+                            />
+                            <span>   ... </span>
+                        </div>
+
 
                         <br />
 
@@ -232,9 +251,7 @@ export const ArticleForm = ({ article, actionType, setActionType , getData }) =>
                               />
                               {errors.password && touched.password && errors.password} // */}
 
-                        <button type='submit' disabled={isSubmitting}>
-                            {actionType === "POST" ? "ثبت جدید" : "به روز رسانی"}
-                        </button>
+                        <input type='submit' disabled={isSubmitting} value={actionType === "POST" ? "ثبت جدید" : "به روز رسانی"} />
                     </form>
                 )}
         </Formik>

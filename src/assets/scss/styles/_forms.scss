@@ -1,0 +1,96 @@
+.form__style {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 2rem auto;
+    padding: 1rem;
+
+    .field__holder {
+        display: block;
+        padding: 9px;
+        border: 1px solid #DDDDDD;
+        margin-bottom: 3rem;
+        border-radius: 3px;
+        width: 48%;
+
+        &:last-child {
+            border: none;
+            margin-bottom: 0px;
+            text-align: center;
+        }
+
+        &>label {
+            display: block;
+            float: right;
+            margin-top: -25px;
+            background: #FFFFFF;
+            height: 25px;
+            padding: 2px 5px 2px 5px;
+            color: #888;
+            font-size: 14px;
+            overflow: hidden;
+        }
+
+        &>input[type="text"],
+        &>input[type="date"],
+        &>input[type="datetime"],
+        &>input[type="email"],
+        &>input[type="number"],
+        &>input[type="search"],
+        &>input[type="time"],
+        &>input[type="url"],
+        &>input[type="password"],
+        &>textarea,
+        &>select {
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            width: 100%;
+            display: block;
+            outline: none;
+            border: none;
+            height: 25px;
+            line-height: 25px;
+            font-size: 16px;
+            padding: 0;
+            font-family: Georgia, "Times New Roman", Times, serif;
+        }
+
+        &>textarea {
+            resize: none;
+        }
+
+        &>span {
+            background: #F3F3F3;
+            display: block;
+            padding: 3px;
+            margin: 0 -9px -9px -9px;
+            text-align: center;
+            color: #888;
+            font-size: 11px;
+            height: 30px;
+        }
+    }
+
+
+    &>input[type="submit"],
+    &>input[type="button"] {
+        background:$color-primary;
+        border: none;
+        padding: 10px 20px 10px 20px;
+        border-bottom: 3px solid $color-secondary;
+        border-radius: 3px;
+        color: #D2E2FF;
+        margin-left: auto;
+        cursor: pointer;
+        font-family: $font-family;
+    }
+
+    &>input[type="submit"]:hover,
+    &>input[type="button"]:hover {
+        background: $color-secondary;
+        color: $color-white;
+    }
+}

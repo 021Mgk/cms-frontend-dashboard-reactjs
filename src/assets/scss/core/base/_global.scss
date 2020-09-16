@@ -1,0 +1,30 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+html {
+    font-size: 62.5%;
+
+    body {
+        box-sizing: border-box;
+        background: #ECF0F1;
+        color:#151515 ;
+        font-size: 16px;
+        direction: rtl;
+        line-height:160% ;
+        font-family: $font-family;
+    }
+}
+.content{
+    min-height: 60vh;
+}
+
+.area{
+    width: 100%;
+    max-width: 120rem;
+    margin: 0 auto;
+}

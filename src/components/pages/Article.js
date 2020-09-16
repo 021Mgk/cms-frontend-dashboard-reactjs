@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ArticleForm } from '../elements/ArticleForm';
 import ModalView from '../elements/ModalView'
 
 
@@ -61,7 +62,7 @@ export default function Article() {
   return (
     <>
       <div className='area'>
-        <button onClick={() => addHandler()}>add new one</button>
+        <button className="btn btn-add" onClick={() => addHandler()}> ثبت جدید  </button>
         <table>
           <thead>
             <tr className='table-head'>
@@ -89,7 +90,9 @@ export default function Article() {
       </div>
 
       {modal ? (
-        <ModalView article={editArticle} actionType={actionType} setActionType={setActionType} getData={()=>getDATA()} setModal={setModal} />
+        <ModalView title="مقالات" setModal={setModal} >
+          <ArticleForm editData={editArticle} actionType={actionType} setActionType={setActionType} getData={() => getDATA()} />
+        </ModalView>
       ) : null}
     </>
   );

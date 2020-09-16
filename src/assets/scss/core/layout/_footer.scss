@@ -1,0 +1,24 @@
+.footer {
+    background: $color-primary;
+    padding: 2rem;
+    margin-top: 2rem;
+    border-top: 5px solid $color-secondary;
+
+    .area {
+
+        .footer__logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &>a {
+                color: $color-white;
+
+                &>img {
+                    width: 200px;
+                    height: auto;
+                }
+            }
+        }
+    }
+}
