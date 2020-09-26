@@ -10,7 +10,7 @@ const INITIALVALUE = {
     title: '',
     link: '',
     place: 0,
-    order: 0,
+    ord: 0,
     icon: ''
 };
 
@@ -42,8 +42,12 @@ export default function Article() {
 
 
 
-    const editHandler = (id) => {
-        const link = data.find((d) => d.id === id);
+    const editHandler = async (id) => {
+        // const link = data.find((d) => d.id === id);
+        const res = await fetch(`http://localhost:8080/api/v1/links/${id}`, {
+            method: 'GET',
+        });
+        const link = await res.json();
         setActionType("PUT");
         setEditLinks(link);
         setModal(true);
@@ -77,7 +81,7 @@ export default function Article() {
                                 <td className='column2'>{d.title}</td>
                                 <td className='column3'>{d.link}</td>
                                 <td className='column4'> {d.place}</td>
-                                <td className='column5'> {d.order}</td>
+                                <td className='column5'> {d.ord}</td>
                                 <td className='column6'>{d.active ? " فعال" : " غیرفعال "}</td>
                             </tr>
                         ))}
@@ -86,8 +90,8 @@ export default function Article() {
             </div>
 
             {modal ? (
-                <ModalView  title="پیوندها" setModal={setModal}>
-                        <LinksForm editData={editLinks} actionType={actionType} setActionType={setActionType} getData={() => getDATA()} />
+                <ModalView title="پیوندها" setModal={setModal}>
+                    <LinksForm editData={editLinks} actionType={actionType} setActionType={setActionType} getData={() => getDATA()} />
                 </ModalView>
             ) : null}
         </>

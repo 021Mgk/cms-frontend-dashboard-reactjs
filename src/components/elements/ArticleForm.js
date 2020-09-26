@@ -3,10 +3,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import DatePicker from 'react-datepicker2';
 import momentJalaali from 'moment-jalaali';
-
-
-
-
+import JoditEditor from "jodit-react";
 
 const INITIALVALUE = {
     id: '',
@@ -24,50 +21,61 @@ const INITIALVALUE = {
 
 export const ArticleForm = ({ editData, actionType, setActionType, getData }) => {
 
-    const [formValues , setFormValues] = useState(editData || INITIALVALUE)
+    const [formValues, setFormValues] = useState(editData || INITIALVALUE)
+    const [miladi, setMiladi] = useState();
+    const [todayJalali, setTodayJalali] = useState(momentJalaali())
 
-    const [todayJalali, setTodayJalali] = useState(momentJalaali());
-    const [todayMilady, setTodayMilady] = useState();
+
+    const convertDate = (date) => {
+        setMiladi(date.format('YYYY/M/D'))
+    }
 
 
-    const persionToEnglish = (date) => {
-        const formated = date.format('YYYY-M-D');
-        setTodayMilady(formated);
-        setFormValues({...formValues , register_date : todayMilady})
-    };
 
     const ArticleFormValidation = yup.object().shape({
         title: yup.string().required('لطفا عنوان را وارد نمایید'),
         type: yup.number().required('لطفا نوع را انتخاب نمایید'),
     });
+
     return (
         <Formik
             //initialValues={editData || INITIALVALUE}
             initialValues={formValues}
             validationSchema={ArticleFormValidation}
             onSubmit={async (values, { setSubmitting }) => {
+
+                let formData = new FormData();
+                formData.append("status", +values.status);
+                console.log("asdasd", typeof (values.status));
+                formData.append("att", values.attachment);
+                formData.append("cov", values.cover);
+                formData.append("register_date", miladi);
+                formData.append("thu", values.thumbnail);
+                formData.append("summary", values.summary);
+                formData.append("text", values.text);
+                formData.append("title", values.title);
+                formData.append("views", +values.views);
+                formData.append("type", +values.type);
+
                 if (actionType === "POST") {
-                    console.log("avale post ", JSON.stringify(values, null, 2));
+
                     await fetch('http://localhost:8080/api/v1/articles', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',
-                            'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(values)
+                        body: formData
                     });
                     setActionType("PUT");
                     getData();
                 }
                 if (actionType === "PUT") {
-                    console.log(JSON.stringify(values, null, 2));
-                    await fetch(`http://localhost:8080/api/v1/articles/${editData?.id}`, {
+                    await fetch(`http://localhost:8080/api/v1/articles/${editData.id}`, {
                         method: 'PUT',
                         headers: {
                             'Accept': 'application/json',
-                            'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(values)
+                        body: formData
                     });
                     getData();
                 }
@@ -81,33 +89,27 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
                 handleChange,
                 handleBlur,
                 handleSubmit,
-                isSubmitting
+                isSubmitting,
+                setFieldValue
             }) => (
-                    <form className='form__style' onSubmit={handleSubmit} autoComplete='off'>
-
-                        <pre>
-                            {JSON.stringify(values, null, 4)}
-                        </pre>
+                    <form className='form__style' onSubmit={handleSubmit} autoComplete='off' encType="multipart/form-data">
 
                         <div className="field__holder">
                             <label htmlFor="title">   تاریخ ثبت </label>
                             <DatePicker
-                                value={todayJalali}
+                                value={values.register_date ? momentJalaali(values.register_date) : todayJalali}
                                 persianDigits={true}
                                 isGregorian={false}
                                 timePicker={false}
                                 onChange={(value) => {
-                                    persionToEnglish(value);
-                                  //  values.register_date = todayMilady
+                                    convertDate(value)
                                 }}
                             />
                             <input
                                 type='text'
-                                placeholder='dd-mm-yyyy'
                                 name='register_date'
-                                onChange={handleChange}
                                 onBlur={handleBlur}
-                                value={actionType == "PUT" ? (values.register_date ? values.register_date : null) : todayMilady}
+                                value={miladi}
                             // style={{display:none}}
                             />
                             <span> .... </span>
@@ -127,7 +129,33 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
 
 
 
+                        {/* <div className="field__holder">
+                            <label htmlFor="text">   متن </label>
+                            <input
+                                type='text'
+                                name='text'
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.text}
+                            />
+                            <span>   ... </span>
+                        </div> */}
 
+                        <div className="editor__older" >
+                            <label htmlFor="text">   متن </label>
+                            <JoditEditor
+                                onChange={handleChange}
+                                value={values.text}
+                                config={
+                                    {
+                                        direction: "rtl",
+                                        defaultMode: 1,
+                                        toolbarSticky: false,
+                                        minHeight: 450
+                                    }
+                                }
+                            />
+                        </div>
 
                         <div className="field__holder">
                             <label htmlFor="summary">   خلاصه </label>
@@ -142,25 +170,14 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
                         </div>
 
                         <div className="field__holder">
-                            <label htmlFor="text">   متن </label>
-                            <input
-                                type='text'
-                                name='text'
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.text}
-                            />
-                            <span>   ... </span>
-                        </div>
-
-                        <div className="field__holder">
                             <label htmlFor="thumbnail">  تصویر کوچک </label>
                             <input
                                 type='file'
                                 name='thumbnail'
-                                onChange={handleChange}
+                                onChange={e => {
+                                    setFieldValue("thumbnail", e.target.files[0])
+                                }}
                                 onBlur={handleBlur}
-                                value={values.thumbnail || ''}
                             />
                             <span>   ... </span>
                         </div>
@@ -170,27 +187,26 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
                             <input
                                 type='file'
                                 name='cover'
-                                onChange={handleChange}
                                 onBlur={handleBlur}
-                                value={values.cover || ''}
+                                onChange={e => {
+                                    setFieldValue("cover", e.target.files[0])
+                                }}
                             />
-                            <span>   ... </span>
+                            <span>   <img src={values.cover} />  </span>
                         </div>
-
 
                         <div className="field__holder">
                             <label htmlFor="attachment">  پیوست </label>
                             <input
                                 type='file'
                                 name='attachment'
-                                onChange={handleChange}
+                                onChange={e => {
+                                    setFieldValue("attachment", e.target.files[0])
+                                }}
                                 onBlur={handleBlur}
-                                value={values.attachment || ''}
                             />
                             <span>   ... </span>
                         </div>
-
-
 
                         <div className="field__holder">
                             <label htmlFor="status">  وضعیت </label>
@@ -221,11 +237,6 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
                             <span>    {errors.type && touched.type && errors.type} </span>
                         </div>
 
-
-
-
-
-
                         <div className="field__holder">
                             <label htmlFor="views"> تعداد نمایش </label>
                             <input
@@ -237,21 +248,9 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
                             />
                             <span>   ... </span>
                         </div>
-
-
-                        <br />
-
-                        {/* {errors.email && touched.email && errors.email}
-                              <input
-                                  type="password"
-                                  name="password"
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  value={values.password}
-                              />
-                              {errors.password && touched.password && errors.password} // */}
-
-                        <input type='submit' disabled={isSubmitting} value={actionType === "POST" ? "ثبت جدید" : "به روز رسانی"} />
+                        <div className="btn_holder">
+                            <input type='submit' disabled={isSubmitting} value={actionType === "POST" ? "ثبت جدید" : "به روز رسانی"} />
+                        </div>
                     </form>
                 )}
         </Formik>

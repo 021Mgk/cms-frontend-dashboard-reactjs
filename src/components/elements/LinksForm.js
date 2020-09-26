@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 
@@ -15,6 +15,7 @@ const INITIALVALUE = {
 
 const LinksForm = ({ editData, actionType, setActionType, getData }) => {
 
+    const [iconPreview, setIconPreview] = useState();
 
     const LinksFormValidation = yup.object().shape({
         title: yup.string().required('لطفا عنوان را وارد نمایید'),
@@ -26,28 +27,33 @@ const LinksForm = ({ editData, actionType, setActionType, getData }) => {
             initialValues={editData || INITIALVALUE}
             validationSchema={LinksFormValidation}
             onSubmit={async (values, { setSubmitting }) => {
+
+                let formData = new FormData();
+                formData.append("file", values.icon);
+                formData.append("title", values.title);
+                formData.append("link", values.link);
+                formData.append("place", values.place);
+                formData.append("ord", values.ord);
+                formData.append("active", values.active);
+
                 if (actionType === "POST") {
-                    console.log("avale post ", JSON.stringify(values, null, 2));
                     await fetch('http://localhost:8080/api/v1/links', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',
-                            'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(values)
+                        body: formData
                     });
                     setActionType("PUT");
                     getData();
                 }
                 if (actionType === "PUT") {
-                    console.log(JSON.stringify(values, null, 2));
                     await fetch(`http://localhost:8080/api/v1/links/${editData?.id}`, {
                         method: 'PUT',
                         headers: {
                             'Accept': 'application/json',
-                            'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(values)
+                        body: formData
                     });
                     getData();
                 }
@@ -61,9 +67,10 @@ const LinksForm = ({ editData, actionType, setActionType, getData }) => {
                 handleChange,
                 handleBlur,
                 handleSubmit,
-                isSubmitting
+                isSubmitting,
+                setFieldValue
             }) => (
-                    <form className='form__style' onSubmit={handleSubmit} autoComplete='off'>
+                    <form className='form__style' encType="multipart/form-data" onSubmit={handleSubmit} autoComplete='off'>
 
                         <div className="field__holder">
                             <label htmlFor="title">عنوان</label>
@@ -89,16 +96,21 @@ const LinksForm = ({ editData, actionType, setActionType, getData }) => {
                             <span>    <ErrorMessage name='link' component='div' />  </span>
                         </div>
 
-                        <div className="field__holder">
+                        <div className="field__holder without__alarm">
                             <label htmlFor="icon">آیکون</label>
                             <input
                                 type='file'
                                 name='icon'
-                                onChange={handleChange}
+                                onChange={(event) => {
+                                    setIconPreview(window.URL.createObjectURL(event.target.files[0]))
+                                    setFieldValue("icon", event.target.files[0])
+                                }}
                                 onBlur={handleBlur}
-                                value={values.icon || ''}
                             />
-                            <span>   ... </span>
+                            {
+                                (iconPreview || values.icon) && <img src={iconPreview ? iconPreview : values.icon} style={{ width: "50px", height: "50px", float: "left" }} />
+                            }
+
                         </div>
 
                         <div className="field__holder">
@@ -116,13 +128,13 @@ const LinksForm = ({ editData, actionType, setActionType, getData }) => {
                         </div>
 
                         <div className="field__holder">
-                            <label htmlFor="order">اولویت نمایش </label>
+                            <label htmlFor="ord">اولویت نمایش </label>
                             <input
                                 type='number'
-                                name='order'
+                                name='ord'
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                value={values.order}
+                                value={values.ord}
                             />
                             <span>   ... </span>
                         </div>
@@ -138,8 +150,9 @@ const LinksForm = ({ editData, actionType, setActionType, getData }) => {
                             />
                             <span>   ... </span>
                         </div>
-
-                        <input type='submit' disabled={isSubmitting} value={actionType === "POST" ? "ثبت جدید" : "به روز رسانی"} />
+                        <div className="btn_holder">
+                            <input type='submit' disabled={isSubmitting} value={actionType === "POST" ? "ثبت جدید" : "به روز رسانی"} />
+                        </div>
                     </form>
                 )}
         </Formik>

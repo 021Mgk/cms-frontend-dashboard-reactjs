@@ -45,6 +45,7 @@ export default function Article() {
   }
 
 
+  
 
   const editHandler = (id) => {
     const arti = data.find((d) => d.id === id);

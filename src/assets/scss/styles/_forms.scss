@@ -1,19 +1,41 @@
 .form__style {
     display: flex;
     align-items: flex-start;
-    justify-content: space-evenly;
+    justify-content: flex-start;
     flex-wrap: wrap;
     width: 100%;
     margin: 2rem auto;
     padding: 1rem;
 
+    .editor__older {
+        width: 97%;
+        margin: 0 auto;
+        margin-bottom: 3rem;
+
+        &>label {
+            display: block;
+            float: right;
+            margin-top: -25px;
+            background: #FFFFFF;
+            height: 25px;
+            padding: 2px 5px 2px 5px;
+            color: #888;
+            font-size: 14px;
+            overflow: hidden;
+        }
+    }
+
     .field__holder {
         display: block;
         padding: 9px;
         border: 1px solid #DDDDDD;
-        margin-bottom: 3rem;
+        margin: 2rem 1rem;
         border-radius: 3px;
         width: 48%;
+
+        &.without__alarm{
+            min-height: 65px;
+        }
 
         &:last-child {
             border: none;
@@ -74,23 +96,28 @@
         }
     }
 
+    .btn_holder {
+        width: 97%;
+        margin: 0 auto;
 
-    &>input[type="submit"],
-    &>input[type="button"] {
-        background:$color-primary;
-        border: none;
-        padding: 10px 20px 10px 20px;
-        border-bottom: 3px solid $color-secondary;
-        border-radius: 3px;
-        color: #D2E2FF;
-        margin-left: auto;
-        cursor: pointer;
-        font-family: $font-family;
+        &>input[type="submit"],
+        &>input[type="button"] {
+            background: $color-primary;
+            border: none;
+            padding: 10px 20px 10px 20px;
+            border-bottom: 3px solid $color-secondary;
+            border-radius: 3px;
+            color: #D2E2FF;
+            margin-left: auto;
+            cursor: pointer;
+            font-family: $font-family;
+        }
+
+        &>input[type="submit"]:hover,
+        &>input[type="button"]:hover {
+            background: $color-secondary;
+            color: $color-white;
+        }
     }
 
-    &>input[type="submit"]:hover,
-    &>input[type="button"]:hover {
-        background: $color-secondary;
-        color: $color-white;
-    }
 }
