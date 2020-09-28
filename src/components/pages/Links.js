@@ -35,6 +35,7 @@ export default function Article() {
         console.log("GET DATA INVOKE")
         const res = await fetch('http://localhost:8080/api/v1/links', {
             method: 'GET',
+            credentials: 'include'
         });
         const links = await res.json();
         setData(links)

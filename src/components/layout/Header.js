@@ -12,6 +12,9 @@ const Header = () => {
                   <Link to="/" >صفحه اصلی</Link>
                 </li>
                 <li>
+                  <Link to="/login" >ورود</Link>
+                </li>
+                <li>
                   <Link to="/article">مقالات</Link>
                 </li>
                 <li>

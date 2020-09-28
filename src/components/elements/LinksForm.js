@@ -42,6 +42,7 @@ const LinksForm = ({ editData, actionType, setActionType, getData }) => {
                         headers: {
                             'Accept': 'application/json',
                         },
+                        credentials: 'include',
                         body: formData
                     });
                     setActionType("PUT");
@@ -53,6 +54,7 @@ const LinksForm = ({ editData, actionType, setActionType, getData }) => {
                         headers: {
                             'Accept': 'application/json',
                         },
+                        credentials: 'include',
                         body: formData
                     });
                     getData();
