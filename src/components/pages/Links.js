@@ -47,6 +47,7 @@ export default function Article() {
         // const link = data.find((d) => d.id === id);
         const res = await fetch(`http://localhost:8080/api/v1/links/${id}`, {
             method: 'GET',
+            credentials: 'include'
         });
         const link = await res.json();
         setActionType("PUT");

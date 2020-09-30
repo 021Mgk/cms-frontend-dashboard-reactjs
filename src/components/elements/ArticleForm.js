@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import DatePicker from 'react-datepicker2';
@@ -20,8 +20,13 @@ const INITIALVALUE = {
 };
 
 export const ArticleForm = ({ editData, actionType, setActionType, getData }) => {
+    const [coverPreview, setCoverPreview] = useState();
+    const [thumbnailPreview, setThumbnailPreview] = useState();
+    const [attachmentPreview, setAttachmentPreview] = useState();
 
-    const [formValues, setFormValues] = useState(editData || INITIALVALUE)
+    const editor = useRef(null)
+    const [formValues, setFormValues] = useState(editData || INITIALVALUE);
+    const [editorValue, setEditorValue] = useState(editData.text || '');
     const [miladi, setMiladi] = useState();
     const [todayJalali, setTodayJalali] = useState(momentJalaali())
 
@@ -31,6 +36,10 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
     }
 
 
+    const handleChangeTextEditor = (newContent) => {
+        console.log(newContent);
+        setEditorValue(newContent);
+    }
 
     const ArticleFormValidation = yup.object().shape({
         title: yup.string().required('لطفا عنوان را وارد نمایید'),
@@ -52,7 +61,7 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
                 formData.append("register_date", miladi);
                 formData.append("thu", values.thumbnail);
                 formData.append("summary", values.summary);
-                formData.append("text", values.text);
+                formData.append("text", editorValue);
                 formData.append("title", values.title);
                 formData.append("views", +values.views);
                 formData.append("type", +values.type);
@@ -61,6 +70,7 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
 
                     await fetch('http://localhost:8080/api/v1/articles', {
                         method: 'POST',
+                        credentials: 'include',
                         headers: {
                             'Accept': 'application/json',
                         },
@@ -72,6 +82,7 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
                 if (actionType === "PUT") {
                     await fetch(`http://localhost:8080/api/v1/articles/${editData.id}`, {
                         method: 'PUT',
+                        credentials: 'include',
                         headers: {
                             'Accept': 'application/json',
                         },
@@ -127,33 +138,23 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
                             <span>   {errors.title && touched.title && errors.title} </span>
                         </div>
 
-
-
-                        {/* <div className="field__holder">
-                            <label htmlFor="text">   متن </label>
-                            <input
-                                type='text'
-                                name='text'
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.text}
-                            />
-                            <span>   ... </span>
-                        </div> */}
-
                         <div className="editor__older" >
                             <label htmlFor="text">   متن </label>
                             <JoditEditor
-                                onChange={handleChange}
-                                value={values.text}
+                                ref={editor}
+                                value={editorValue}
                                 config={
                                     {
+                                        readonly: false,
                                         direction: "rtl",
                                         defaultMode: 1,
                                         toolbarSticky: false,
-                                        minHeight: 450
+                                        minHeight: 450,
                                     }
                                 }
+                                tabIndex={1}
+                                onBlur={newContent => setEditorValue(newContent.target.innerHTML)}
+                                onChange={newContent => { }}
                             />
                         </div>
 
@@ -175,11 +176,14 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
                                 type='file'
                                 name='thumbnail'
                                 onChange={e => {
+                                    setThumbnailPreview(window.URL.createObjectURL(e.target.files[0]))
                                     setFieldValue("thumbnail", e.target.files[0])
                                 }}
                                 onBlur={handleBlur}
                             />
-                            <span>   ... </span>
+                            {
+                                (thumbnailPreview || values.thumbnail) && <img alt="image perview" src={thumbnailPreview ? thumbnailPreview : values.thumbnail} style={{ width: "50px", height: "50px", float: "left" }} />
+                            }
                         </div>
 
                         <div className="field__holder">
@@ -189,10 +193,13 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
                                 name='cover'
                                 onBlur={handleBlur}
                                 onChange={e => {
+                                    setCoverPreview(window.URL.createObjectURL(e.target.files[0]))
                                     setFieldValue("cover", e.target.files[0])
                                 }}
                             />
-                            <span>   <img src={values.cover} />  </span>
+                            {
+                                (coverPreview || values.cover) && <img alt="image perview" src={coverPreview ? coverPreview : values.cover} style={{ width: "50px", height: "50px", float: "left" }} />
+                            }
                         </div>
 
                         <div className="field__holder">
@@ -201,11 +208,14 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
                                 type='file'
                                 name='attachment'
                                 onChange={e => {
+                                    setAttachmentPreview(window.URL.createObjectURL(e.target.files[0]))
                                     setFieldValue("attachment", e.target.files[0])
                                 }}
                                 onBlur={handleBlur}
                             />
-                            <span>   ... </span>
+                            {
+                                (attachmentPreview || values.attachment) && <a href={attachmentPreview ? attachmentPreview : values.attachment} download> دریافت فایل </a>
+                            }
                         </div>
 
                         <div className="field__holder">

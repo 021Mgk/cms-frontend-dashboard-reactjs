@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Switch } from 'react-router-dom';
-import Cookies from 'js-cookie';
+import { connect } from 'react-redux';
+
+import { login, logout } from './actions/index';
 
 import Home from './components/pages/Home';
 import Article from './components/pages/Article';
@@ -9,37 +11,57 @@ import Login from './components/pages/Login';
 import NotFound from './components/pages/NotFound';
 import Jalali from './components/pages/Jalali';
 
+import Loading from './components/Loading';
+
 import ProtectedRoute from './utils/ProtectedRoute'
 import ProtectedLogin from './utils/ProtectedLogin'
-import AppRoute from './utils/AppRoute';
 
 import LayoutDefault from './layouts/LayoutDefault';
 
 
-export default function App() {
-  const [isAuth, setIsAuth] = useState(false);
+const App = ({ dispatch, isAuth }) => {
+
 
   useEffect(() => {
-    const isAthUser = Cookies.get('user');
-    console.log("tttttt" , isAthUser);
-    if (isAthUser) {
-      setIsAuth(true);
-    }
-    else {
-      setIsAuth(false);
-    }
+    validToken() 
   }, [])
+
+  const validToken = async () => {
+    const resp = await fetch('http://localhost:8080/auth/isValid', {
+      credentials: 'include'
+    });
+    const result = await resp.json();
+    console.log("wwwww", result)
+    if (result.success) {
+      console.log(result.success)
+      dispatch(login)
+    }else{
+      dispatch(logout)
+    }
+
+  }
+
+  if (isAuth === undefined) {
+    return <Loading />
+  }
+
+
   return (
     <Switch>
       <ProtectedLogin exact path="/login" isAuth={isAuth} component={Login} layout={LayoutDefault} />
       <ProtectedRoute exact path="/article" isAuth={isAuth} component={Article} layout={LayoutDefault} />
-      <AppRoute exact path="/" component={Home} layout={LayoutDefault} />
-      {/* <AppRoute exact path="/article" component={Article} layout={LayoutDefault} /> */}
-      <AppRoute exact path="/links" component={Links} layout={LayoutDefault} />
-      <AppRoute exact path="/jalali" component={Jalali} layout={LayoutDefault} />
-      <AppRoute exact path="/jalali" component={Jalali} layout={LayoutDefault} />
-      <AppRoute path="*" component={NotFound} layout={LayoutDefault} />
+      <ProtectedRoute exact path="/" isAuth={isAuth} component={Home} layout={LayoutDefault} />
+      <ProtectedRoute exact path="/links" isAuth={isAuth} component={Links} layout={LayoutDefault} />
+      <ProtectedRoute exact path="/jalali" isAuth={isAuth} component={Jalali} layout={LayoutDefault} />
+      <ProtectedRoute exact path="/jalali" isAuth={isAuth} component={Jalali} layout={LayoutDefault} />
+      <ProtectedRoute path="*" component={NotFound} layout={LayoutDefault} />
     </Switch>
     // <Article />
   );
 }
+
+const mapStateToProps = (state) => ({
+  isAuth: state.login.isAuth
+})
+
+export default connect(mapStateToProps)(App);

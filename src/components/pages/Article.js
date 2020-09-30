@@ -39,18 +39,20 @@ export default function Article() {
     console.log("GET DATA INVOKE")
     const res = await fetch('http://localhost:8080/api/v1/articles', {
       method: 'GET',
+      credentials : 'include'
     });
     const articles = await res.json();
     setData(articles)
   }
-
-
-  
-
-  const editHandler = (id) => {
-    const arti = data.find((d) => d.id === id);
+ 
+  const editHandler =async (id) => {
+    const res = await fetch(`http://localhost:8080/api/v1/articles/${id}`, {
+        method: 'GET',
+        credentials: 'include'
+    });
+    const article = await res.json();
     setActionType("PUT");
-    setEditArticle(arti);
+    setEditArticle(article);
     setModal(true);
   };
 

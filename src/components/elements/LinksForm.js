@@ -39,10 +39,10 @@ const LinksForm = ({ editData, actionType, setActionType, getData }) => {
                 if (actionType === "POST") {
                     await fetch('http://localhost:8080/api/v1/links', {
                         method: 'POST',
+                        credentials: 'include',
                         headers: {
                             'Accept': 'application/json',
                         },
-                        credentials: 'include',
                         body: formData
                     });
                     setActionType("PUT");
@@ -51,10 +51,10 @@ const LinksForm = ({ editData, actionType, setActionType, getData }) => {
                 if (actionType === "PUT") {
                     await fetch(`http://localhost:8080/api/v1/links/${editData?.id}`, {
                         method: 'PUT',
+                        credentials: 'include',
                         headers: {
                             'Accept': 'application/json',
                         },
-                        credentials: 'include',
                         body: formData
                     });
                     getData();
@@ -110,7 +110,7 @@ const LinksForm = ({ editData, actionType, setActionType, getData }) => {
                                 onBlur={handleBlur}
                             />
                             {
-                                (iconPreview || values.icon) && <img src={iconPreview ? iconPreview : values.icon} style={{ width: "50px", height: "50px", float: "left" }} />
+                                (iconPreview || values.icon) && <img alt="image perview" src={iconPreview ? iconPreview : values.icon} style={{ width: "50px", height: "50px", float: "left" }} />
                             }
 
                         </div>

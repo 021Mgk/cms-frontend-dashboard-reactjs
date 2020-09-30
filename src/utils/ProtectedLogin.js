@@ -10,7 +10,7 @@ const ProtectedLogin = ({
 
     Layout = (Layout === undefined) ? props => (<>{props.children}</>) : Layout;
 
-
+    console.log("login protected  ", isAuth)
 
     return (<Route
         {...rest}

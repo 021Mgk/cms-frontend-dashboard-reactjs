@@ -12,19 +12,27 @@ html {
     body {
         box-sizing: border-box;
         background: #ECF0F1;
-        color:#151515 ;
+        color: #151515;
         font-size: 16px;
         direction: rtl;
-        line-height:160% ;
+        line-height: 160%;
         font-family: $font-family;
     }
 }
-.content{
+
+.content {
     min-height: 60vh;
 }
 
-.area{
+.area {
     width: 100%;
     max-width: 120rem;
     margin: 0 auto;
+}
+
+.loading {
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
