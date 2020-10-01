@@ -20,6 +20,8 @@ const INITIALVALUE = {
 };
 
 export const ArticleForm = ({ editData, actionType, setActionType, getData }) => {
+    const [message, setMessage] = useState();
+
     const [coverPreview, setCoverPreview] = useState();
     const [thumbnailPreview, setThumbnailPreview] = useState();
     const [attachmentPreview, setAttachmentPreview] = useState();
@@ -68,7 +70,7 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
 
                 if (actionType === "POST") {
 
-                    await fetch('http://localhost:8080/api/v1/articles', {
+                    const resp = await fetch('http://localhost:8080/api/v1/articles', {
                         method: 'POST',
                         credentials: 'include',
                         headers: {
@@ -76,11 +78,16 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
                         },
                         body: formData
                     });
-                    setActionType("PUT");
-                    getData();
+                    if (resp.ok) {
+                        setMessage("  ثبت با موفقیت انجام شد")
+                        setActionType("PUT");
+                        getData();
+                    } else {
+                        setMessage("لطفا مجدد تلاش کنید مشکلی در ثبت فرم وجود دارد.")
+                    }
                 }
                 if (actionType === "PUT") {
-                    await fetch(`http://localhost:8080/api/v1/articles/${editData.id}`, {
+                    const resp = await fetch(`http://localhost:8080/api/v1/articles/${editData.id}`, {
                         method: 'PUT',
                         credentials: 'include',
                         headers: {
@@ -88,7 +95,12 @@ export const ArticleForm = ({ editData, actionType, setActionType, getData }) =>
                         },
                         body: formData
                     });
-                    getData();
+                    if (resp.ok) {
+                        getData();
+                        setMessage("به روز رسانی با موفقیت انجام شد")
+                    } else {
+                        setMessage("لطفا مجدد تلاش کنید مشکلی در بروزرسانی فرم وجود دارد.")
+                    }
                 }
                 setSubmitting(false);
             }}

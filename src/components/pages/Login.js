@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { connect } from 'react-redux'
@@ -11,6 +11,7 @@ const INITIALVALUE = {
     password: ''
 };
 const Login = ({ dispatch }) => {
+    const [message, setMessage] = useState();
 
     const LoginFormValidation = yup.object().shape({
         username: yup.string().min(3, "کلمه کاربری حداقل 5 حرف می باشد.").required('لطفا نام کاربری صحیح وارد نمایید'),
@@ -19,6 +20,7 @@ const Login = ({ dispatch }) => {
 
     return (
         <div>
+            <div> {message && message}</div>
             <Formik
                 initialValues={INITIALVALUE}
                 validationSchema={LoginFormValidation}
@@ -35,6 +37,8 @@ const Login = ({ dispatch }) => {
                     const response = await res.json();
                     if (response.success) {
                         dispatch(login)
+                    } else {
+                        setMessage(response.message);
                     }
                 }
                 }

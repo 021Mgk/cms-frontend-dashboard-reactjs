@@ -23,22 +23,26 @@ const App = ({ dispatch, isAuth }) => {
 
 
   useEffect(() => {
-    validToken() 
+    validToken()
   }, [])
 
   const validToken = async () => {
     const resp = await fetch('http://localhost:8080/auth/isValid', {
       credentials: 'include'
     });
+
+    if (resp.status === 403) {
+      return dispatch(logout)
+    }
+
     const result = await resp.json();
     console.log("wwwww", result)
     if (result.success) {
       console.log(result.success)
       dispatch(login)
-    }else{
+    } else {
       dispatch(logout)
     }
-
   }
 
   if (isAuth === undefined) {
