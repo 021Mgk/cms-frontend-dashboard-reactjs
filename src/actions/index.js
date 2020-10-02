@@ -1,13 +1,18 @@
 //import { ADD_TODO , TOGGLE_TODO} from './ActionType';
-import { LOGIN, LOGOUT } from './ActionType';
+import { LOGIN, LOGOUT, GETUSERINFO } from './ActionType';
 
-export const login ={
-  type: LOGIN
-} 
+export const login = {
+  type: LOGIN,
+};
 
-export const logout ={
-  type: LOGOUT
-} 
+export const logout = {
+  type: LOGOUT,
+};
+
+export const getUserInfo = (user) => ({
+  type: GETUSERINFO,
+  user,
+});
 
 // let nextTodoId = 0
 // export const addTodo = text => ({
