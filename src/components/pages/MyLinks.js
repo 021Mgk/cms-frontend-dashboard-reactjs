@@ -27,7 +27,7 @@ export default function Article() {
 
   const getDATA = async () => {
     console.log('GET DATA INVOKE');
-    const res = await fetch('http://localhost:8080/api/v1/mylinks', {
+    const res = await fetch('http://localhost:8080/api/v1/userLinks', {
       method: 'GET',
       credentials: 'include',
     });

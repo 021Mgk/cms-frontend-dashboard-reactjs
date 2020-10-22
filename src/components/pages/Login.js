@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { connect } from 'react-redux'
-import { login } from '../../actions/index'
+import { getUserInfo, login } from '../../actions/index'
+import Cookies from 'js-cookie';
 
 
 
@@ -25,6 +26,7 @@ const Login = ({ dispatch }) => {
                 initialValues={INITIALVALUE}
                 validationSchema={LoginFormValidation}
                 onSubmit={async (values, { setSubmitting }) => {
+                    Cookies.remove("token");
                     const res = await fetch('http://localhost:8080/auth/login', {
                         method: 'POST',
                         headers: {
@@ -36,7 +38,8 @@ const Login = ({ dispatch }) => {
                     });
                     const response = await res.json();
                     if (response.success) {
-                        dispatch(login)
+                        dispatch(login);
+                        dispatch(getUserInfo(response.userInfo))
                     } else {
                         setMessage(response.message);
                     }

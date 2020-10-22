@@ -1,0 +1,80 @@
+.paging {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 97%;
+    margin: 0 auto;
+
+    .paging__pages {
+        display: flex;
+
+        &>i {
+            background-color: #fff;
+            display: inline-block;
+            margin: .5rem;
+            color: #444;
+            border: 1px solid #aaa;
+            box-shadow: 0 1px 0 1px rgba(0, 0, 0, .04);
+            border-radius: .5em;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+
+            &:hover {
+                border-color: #888;
+            }
+
+            &:focus {
+                border-color: #aaa;
+                box-shadow: 0 0 1px 3px rgba(59, 153, 252, .7);
+                box-shadow: 0 0 0 3px -moz-mac-focusring;
+                color: #222;
+                outline: none;
+            }
+        }
+    }
+
+    .paging__count {
+
+        &>select {
+            display: block;
+            font-size: 16px;
+            font-weight: 700;
+            color: #444;
+            padding: .6em 1.4em .5em .8em;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            margin: 0;
+            border: 1px solid #aaa;
+            box-shadow: 0 1px 0 1px rgba(0, 0, 0, .04);
+            border-radius: .5em;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: #fff;
+
+            &>option {
+                font-weight: normal;
+                font-family: inherit;
+                padding: 30px;
+            }
+
+            &:hover {
+                border-color: #888;
+            }
+
+            &:focus {
+                border-color: #aaa;
+                box-shadow: 0 0 1px 3px rgba(59, 153, 252, .7);
+                box-shadow: 0 0 0 3px -moz-mac-focusring;
+                color: #222;
+                outline: none;
+            }
+        }
+    }
+}

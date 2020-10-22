@@ -1,0 +1,67 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.tab-manager {
+  display: flex;
+  padding: 24px;
+  justify-content: center;
+  border-bottom: 1px solid #48484859;
+}
+
+.tab {
+  padding: 12px;
+  border-radius: 25px;
+  text-align: center;
+  cursor: pointer;
+  padding: 12px 36px;
+  margin: 0 24px;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  transition: all 0.5s ease;
+  color: black;
+  user-select: none;
+}
+
+.tab:hover {
+  background-color: rgba(0, 43, 73, 0.17);
+}
+
+.selected-tab {
+  background-color: #002b49;
+  color: white;
+}
+
+.tab-content {
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 500px;
+  margin: 0 auto;
+  background: turquoise;
+}
+
+@keyframes tabs {
+  from {
+    opacity: 0;
+    display: none;
+  }
+
+  to {
+    display: block;
+    opacity: 1;
+  }
+}
+
+.yes1 {
+  transition: 1s all linear;
+  animation: tabs 2s linear;
+}
+
+.no1 {
+  display: none;
+  transition: 3s all linear;
+  opacity: 0;
+}

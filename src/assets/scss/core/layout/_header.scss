@@ -22,10 +22,17 @@
 
                 &>li {
                     margin: 10px 20px;
+                    transition: all .2s;
+
+                    &.active  , &:hover{
+                        background: #13846e;
+                    }
 
                     &>a {
                         color: $color-white;
                         text-decoration: none;
+                        display: block;
+                        padding: .5rem 1rem;
                     }
                 }
             }

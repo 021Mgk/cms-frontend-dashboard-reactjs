@@ -1,9 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { logout } from '../../actions';
+import { clearUserInfo, logout } from '../../actions';
 
-const Header = ({ isAuth, dispatch, userInfo }) => {
+
+const Header = ({ isAuth, dispatch }) => {
+
+  const location = useLocation();
+
+
   const handleLogOut = async () => {
     console.log('handle');
     const resp = await fetch('http://localhost:8080/auth/logout', {
@@ -14,12 +19,12 @@ const Header = ({ isAuth, dispatch, userInfo }) => {
     if (result.success) {
       console.log(result.success);
       dispatch(logout);
+      dispatch(clearUserInfo);
     }
   };
 
   return (
     <>
-      {JSON.stringify(userInfo, null, 4)}
       <header className='header'>
         <div className='area'>
           <nav className='navigation'>
@@ -29,26 +34,41 @@ const Header = ({ isAuth, dispatch, userInfo }) => {
                   <Link to='/login'>ورود</Link>
                 </li>
               ) : (
-                <>
-                  <li>
-                    <Link to='/'>صفحه اصلی</Link>
-                  </li>
-                  <li>
-                    <Link to='/article'>مقالات</Link>
-                  </li>
-                  <li>
-                    <Link to='/links'>پیوندها</Link>
-                  </li>
-                  <li>
-                    <Link to='/mylinks'>پیوندهای من</Link>
-                  </li>
-                  <li>
-                    <Link to='' onClick={handleLogOut}>
-                      log out
+                  <>
+                    <li className={location.pathname === "/" ? "active" : null}>
+                      <Link to='/'>صفحه اصلی</Link>
+                    </li>
+                    <li className={location.pathname === "/article" ? "active" : null}>
+                      <Link to='/article'>مقالات</Link>
+                    </li>
+                    <li className={location.pathname === "/links" ? "active" : null}>
+                      <Link to='/links'>پیوندها</Link>
+                    </li>
+                    <li className={location.pathname === "/mylinks" ? "active" : null}>
+                      <Link to='/mylinks'>پیوندهای من</Link>
+                    </li>
+                    <li className={location.pathname === "/map" ? "active" : null}>
+                      <Link to='/map'> نقشه</Link>
+                    </li>
+                    <li className={location.pathname === "/forms" ? "active" : null}>
+                      <Link to='/forms'>فرم چند مرحله ای</Link>
+                    </li>
+                    <li className={location.pathname === "/shahr" ? "active" : null}>
+                      <Link to='/shahr'>   فعالیت ها</Link>
+                    </li>
+                    <li className={location.pathname === "/filemanager" ? "active" : null}>
+                      <Link to='/filemanager'>    مدیریت اسناد</Link>
+                    </li>
+                    <li className={location.pathname === "/scroll" ? "active" : null}>
+                      <Link to='/scroll'>    scroll</Link>
+                    </li>
+                    <li >
+                      <Link to='' onClick={handleLogOut}>
+                        log out
                     </Link>
-                  </li>
-                </>
-              )}
+                    </li>
+                  </>
+                )}
             </ul>
           </nav>
         </div>
@@ -59,7 +79,6 @@ const Header = ({ isAuth, dispatch, userInfo }) => {
 
 const mapStateToProps = (state) => ({
   isAuth: state.login.isAuth,
-  userInfo: state.getUserInfo.user,
 });
 
 export default connect(mapStateToProps)(Header);

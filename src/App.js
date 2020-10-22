@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -11,15 +11,23 @@ import Login from './components/pages/Login';
 import NotFound from './components/pages/NotFound';
 import Jalali from './components/pages/Jalali';
 import MyLinks from './components/pages/MyLinks';
+import Forms from './components/pages/Forms';
+import Shahr from './components/pages/Shahr';
+import Map from './components/pages/Map';
+import Scroll from './components/pages/Scroll';
+import FileManager from './components/pages/FileManager';
 
 import Loading from './components/Loading';
 
 import ProtectedRoute from './utils/ProtectedRoute';
 import ProtectedLogin from './utils/ProtectedLogin';
 
+
 import LayoutDefault from './layouts/LayoutDefault';
 
-const App = ({ dispatch, isAuth, userInfo }) => {
+
+
+const App = ({ dispatch, isAuth }) => {
   useEffect(() => {
     validToken();
   }, []);
@@ -34,9 +42,7 @@ const App = ({ dispatch, isAuth, userInfo }) => {
     }
 
     const result = await resp.json();
-    console.log('wwwww', result);
     if (result.success) {
-      console.log(result.success);
       dispatch(login);
       dispatch(getUserInfo(result.userInfo));
     } else {
@@ -66,6 +72,34 @@ const App = ({ dispatch, isAuth, userInfo }) => {
       />
       <ProtectedRoute
         exact
+        path='/forms'
+        isAuth={isAuth}
+        component={Forms}
+        layout={LayoutDefault}
+      />
+      <ProtectedRoute
+        exact
+        path='/filemanager'
+        isAuth={isAuth}
+        component={FileManager}
+        layout={LayoutDefault}
+      />
+      <ProtectedRoute
+        exact
+        path='/shahr'
+        isAuth={isAuth}
+        component={Shahr}
+        layout={LayoutDefault}
+      />
+      <ProtectedRoute
+        exact
+        path='/map'
+        isAuth={isAuth}
+        component={Map}
+        layout={LayoutDefault}
+      />
+      <ProtectedRoute
+        exact
         path='/mylinks'
         isAuth={isAuth}
         component={MyLinks}
@@ -87,9 +121,9 @@ const App = ({ dispatch, isAuth, userInfo }) => {
       />
       <ProtectedRoute
         exact
-        path='/jalali'
+        path='/scroll'
         isAuth={isAuth}
-        component={Jalali}
+        component={Scroll}
         layout={LayoutDefault}
       />
       <ProtectedRoute
@@ -101,7 +135,6 @@ const App = ({ dispatch, isAuth, userInfo }) => {
       />
       <ProtectedRoute path='*' component={NotFound} layout={LayoutDefault} />
     </Switch>
-    // <Article />
   );
 };
 

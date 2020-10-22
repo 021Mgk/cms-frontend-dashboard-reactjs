@@ -14,6 +14,11 @@ export const getUserInfo = (user) => ({
   user,
 });
 
+export const clearUserInfo = ({
+  type: GETUSERINFO,
+  user: {}
+});
+
 // let nextTodoId = 0
 // export const addTodo = text => ({
 //   type: ADD_TODO,

@@ -9,11 +9,11 @@ const login = (state, action) => {
         // })
         case "LOGOUT":
             return { ...state, isAuth: false }
-            // Object.assign({}, state, {
-            //     isAuth: false
-            // })
+        // Object.assign({}, state, {
+        //     isAuth: false
+        // })
         default:
-            return {...state}
+            return { ...state }
     }
 }
 // switch (type) {

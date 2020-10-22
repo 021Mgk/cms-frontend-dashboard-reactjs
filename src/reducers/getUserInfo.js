@@ -3,14 +3,8 @@ const getUserInfo = (state, action) => {
   switch (type) {
     case 'GETUSERINFO':
       return { ...state, user };
-    // Object.assign({}, state, {
-    //     isAuth: true
-    // })
-    // case "LOGOUT":
-    //     return { ...state, isAuth: false }
-    // Object.assign({}, state, {
-    //     isAuth: false
-    // })
+    case "CLEARUSERINFO":
+      return { ...state, user: {} }
     default:
       return { ...state };
   }
