@@ -4,7 +4,8 @@ import * as yup from 'yup';
 
 
 export default function FileManager() {
-    const refs = useRef()
+    const refs = useRef();
+    const inputRef = useRef();
 
     const [message, setMessage] = useState();
     const [files, setFiles] = useState([]);
@@ -34,6 +35,7 @@ export default function FileManager() {
             fetchURL = `http://localhost:8080/api/v1/files/${currentPage}/${pageSize}/${fileName}`;
         }
         else {
+            console.log("ssssssssssssssssssssssssssssssss", currentPage, pageSize)
             fetchURL = `http://localhost:8080/api/v1/files/${currentPage}/${pageSize}`;
         }
         const resp = await fetch(fetchURL, {
@@ -52,6 +54,7 @@ export default function FileManager() {
         const pageCount = count / pageSize;
         console.log("pageCount ", pageCount);
         if (count % pageSize !== 0) {
+
             setPageNumber(Math.ceil(pageCount))
         }
         else {
@@ -113,11 +116,11 @@ export default function FileManager() {
                     if (resp.ok) {
                         setMessage("  ثبت با موفقیت انجام شد")
                         resetForm({ files: '' })
-                        getData();
+                        getData(currentPage, pageSize);
                     } else {
                         setMessage("لطفا مجدد تلاش کنید مشکلی در ثبت فرم وجود دارد.")
                     }
-
+                    inputRef.current.value = '';
                     setSubmitting(false);
                 }}
             >
@@ -136,6 +139,7 @@ export default function FileManager() {
                                     multiple
                                     type='file'
                                     name='files'
+                                    ref={inputRef}
                                     onBlur={handleBlur}
                                     onChange={e => {
                                         setFieldValue("files", e.target.files)
@@ -154,11 +158,11 @@ export default function FileManager() {
                 <p>جستجو: </p>
                 <input onChange={(e) => handleSearch(e.target.value)} value={filterTXT} />
                 <button onClick={handleGetFilterData}> send  </button>
-                <button onClick={() => {setCurrentPage(1); setFilterTXT(''); getData(currentPage, pageSize); }}> reset </button>
+                <button onClick={() => { setCurrentPage(1); setFilterTXT(''); getData(currentPage, pageSize); }}> reset </button>
             </div>
             <div className="file__manager" ref={refs}>
                 {
-                    files.map(f => (
+                    files && files.map(f => (
                         <>
                             <div className="file__viewe">
                                 <div className="file__view-img">
